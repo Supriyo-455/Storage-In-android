@@ -1,6 +1,7 @@
 package com.example.storageinandroid.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,12 +14,13 @@ import android.widget.Toast;
 
 import com.example.storageinandroid.R;
 import com.example.storageinandroid.database.DatabaseHelper;
+import com.example.storageinandroid.databinding.ActivityMainBinding;
 import com.example.storageinandroid.model.CustomerModel;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    private ActivityMainBinding mainBinding;
     private Button btn_add, btn_viewAll, btn_hide;
     private EditText et_age, et_name;
     private Switch sw_active;
@@ -30,19 +32,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        btn_add = findViewById(R.id.btn_add);
-        btn_viewAll = findViewById(R.id.btn_viewAll);
-        btn_hide = findViewById(R.id.btn_hide);
-        et_age = findViewById(R.id.et_age);
-        et_name = findViewById(R.id.et_name);
-        sw_active = findViewById(R.id.sw_active);
-        list_view = findViewById(R.id.list_view);
+        btn_add = mainBinding.btnAdd;
+        btn_viewAll = mainBinding.btnViewAll;
+        btn_hide = mainBinding.btnHide;
+        et_age = mainBinding.etAge;
+        et_name = mainBinding.etName;
+        sw_active = mainBinding.swActive;
+        list_view = mainBinding.listView;
 
         databaseHelper = new DatabaseHelper(MainActivity.this);
 
-        if(isVisible) showCustomer();
+        if (isVisible) showCustomer();
 
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,13 +57,13 @@ public class MainActivity extends AppCompatActivity {
                             sw_active.isActivated());
 
                     Toast.makeText(MainActivity.this, customerModel.toString(), Toast.LENGTH_SHORT).show();
-                }catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(MainActivity.this, "Error Creating customer!", Toast.LENGTH_SHORT).show();
-                    customerModel = new CustomerModel(-1,"error", 0,false);
+                    customerModel = new CustomerModel(-1, "error", 0, false);
                 }
                 boolean success = databaseHelper.addOne(customerModel);
-                Toast.makeText(MainActivity.this, "Success "+success, Toast.LENGTH_SHORT).show();
-                if(isVisible) showCustomer();
+                Toast.makeText(MainActivity.this, "Success " + success, Toast.LENGTH_SHORT).show();
+                if (isVisible) showCustomer();
             }
         });
 
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 CustomerModel clickedCustomer = (CustomerModel) parent.getItemAtPosition(position);
                 databaseHelper.deleteOne(clickedCustomer);
                 showCustomer();
-                Toast.makeText(MainActivity.this, "Item deleted: "+clickedCustomer.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Item deleted: " + clickedCustomer.getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 isVisible = true;
-                if(isVisible) showCustomer();
+                if (isVisible) showCustomer();
             }
         });
 
